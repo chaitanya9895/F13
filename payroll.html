@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="employee.html">Employee</a></li>
+            <li><a href="attendance.html">Attendance </a></li>
+            <li><a href="performance.html">Performance</a></li>
+            <li><a href="payroll.html">Payroll </a></li>
+            <li><a href="documents.html">Document </a></li>
+            <li><a href="#" id="logout-button">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container payroll-container">
+        <h2>Payroll Processing</h2>
+        <form id="payroll-form">
+            <label for="employee-name">Employee Name:</label>
+            <input type="text" id="employee-name" name="employee-name" required>
+
+            <label for="basic-salary">Basic Salary:</label>
+            <input type="number" id="basic-salary" name="basic-salary" required>
+
+            <label for="bonuses">Bonuses:</label>
+            <input type="number" id="bonuses" name="bonuses">
+
+            <label for="deductions">Deductions:</label>
+            <input type="number" id="deductions" name="deductions">
+
+            <button type="submit">Calculate Salary</button>
+        </form>
+
+        <div id="employee-salaries">
+            <h3>Employee Salaries</h3>
+            <ul id="employee-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+
+        const employeeSalaries = {};
+        const employeeList = document.getElementById('employee-list');
+
+        // Handle payroll form submission
+        document.getElementById('payroll-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const employeeName = document.getElementById('employee-name').value;
+            const basicSalary = parseFloat(document.getElementById('basic-salary').value);
+            const bonuses = parseFloat(document.getElementById('bonuses').value) || 0;
+            const deductions = parseFloat(document.getElementById('deductions').value) || 0;
+
+            const netSalary = basicSalary + bonuses - deductions;
+
+            // Update or add employee salary data
+            employeeSalaries[employeeName] = {
+                basicSalary: basicSalary,
+                bonuses: bonuses,
+                deductions: deductions,
+                netSalary: netSalary
+            };
+
+            updateEmployeeList();
+
+            alert('Payroll updated!');
+
+            // Reset form
+            document.getElementById('payroll-form').reset();
+        });
+
+        function updateEmployeeList() {
+            employeeList.innerHTML = '';
+
+            for (const employeeName in employeeSalaries) {
+                const employeeItem = document.createElement('li');
+                employeeItem.textContent = employeeName;
+
+                employeeItem.addEventListener('mouseover', function() {
+                    showSalaryDetails(employeeName);
+                });
+
+                employeeItem.addEventListener('mouseout', function() {
+                    hideSalaryDetails();
+                });
+
+                employeeList.appendChild(employeeItem);
+            }
+        }
+
+        function showSalaryDetails(employeeName) {
+            const salaryDetails = employeeSalaries[employeeName];
+
+            const salaryDetailsDiv = document.createElement('div');
+            salaryDetailsDiv.id = 'salary-details';
+            salaryDetailsDiv.innerHTML = `
+                <p>Employee Name: ${employeeName}</p>
+                <p>Basic Salary: $${salaryDetails.basicSalary.toFixed(2)}</p>
+                <p>Bonuses: $${salaryDetails.bonuses.toFixed(2)}</p>
+                <p>Deductions: $${salaryDetails.deductions.toFixed(2)}</p>
+                <p>Net Salary: $${salaryDetails.netSalary.toFixed(2)}</p>
+            `;
+
+            employeeList.appendChild(salaryDetailsDiv);
+        }
+
+        function hideSalaryDetails() {
+            const salaryDetailsDiv = document.getElementById('salary-details');
+            if (salaryDetailsDiv) {
+                salaryDetailsDiv.remove();
+            }
+        }
+    </script>
+</body>
+</html>

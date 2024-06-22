@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance </title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    
+    <nav>
+        <ul>
+            
+            <li><a href="home.html">Home</a></li>
+            <li><a href="employee.html">Employee </a></li>
+            <li><a href="attendance.html">Attendance </a></li>
+            <li><a href="performance.html">Performance</a></li>
+            <li><a href="payroll.html">Payroll</a></li>
+            <li><a href="documents.html">Document</a></li>
+            <li><a href="#" id="logout-button">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container performance-container">
+        <h2>Performance</h2>
+
+        <!-- Performance Rating Form -->
+        <div class="performance-rating">
+            <h3>Submit Performance Rating</h3>
+            <form id="performance-form">
+                <label for="employee-name">Employee Name:</label>
+                <input type="text" id="employee-name" name="employee-name" required>
+                <label for="performance-rating">Rating:</label>
+                <select id="performance-rating" name="performance-rating" required>
+                    <option value="1">1 - Poor</option>
+                    <option value="2">2 - Fair</option>
+                    <option value="3">3 - Good</option>
+                    <option value="4">4 - Very Good</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+                <button type="submit">Submit Rating</button>
+            </form>
+        </div>
+
+        <!-- Employee List and Pie Chart -->
+        <div class="chart-container">
+            <h3>Employee Performance</h3>
+            <ul id="employee-list"></ul>
+            <canvas id="performance-chart" style="display: none;"></canvas>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+
+        const employeeData = {};
+        const employeeList = document.getElementById('employee-list');
+        const performanceChartCanvas = document.getElementById('performance-chart');
+        let performanceChart;
+
+        // Initialize Chart.js pie chart
+        function initChart() {
+            const ctx = performanceChartCanvas.getContext('2d');
+            performanceChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'],
+                    datasets: [{
+                        label: 'Performance Ratings',
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            '#ff6384',
+                            '#ff9f40',
+                            '#ffcd56',
+                            '#4bc0c0',
+                            '#36a2eb'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart with specific employee data
+        function updateChart(data) {
+            performanceChart.data.datasets[0].data = data;
+            performanceChart.update();
+        }
+
+        // Handle performance rating submission
+        document.getElementById('performance-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const employeeName = document.getElementById('employee-name').value;
+            const rating = parseInt(document.getElementById('performance-rating').value);
+
+            // Initialize employee data if not exists
+            if (!employeeData[employeeName]) {
+                employeeData[employeeName] = [0, 0, 0, 0, 0];
+                const employeeItem = document.createElement('li');
+                employeeItem.textContent = employeeName;
+                employeeItem.addEventListener('mouseover', function() {
+                    updateChart(employeeData[employeeName]);
+                    performanceChartCanvas.style.display = 'block';
+                });
+                employeeItem.addEventListener('mouseout', function() {
+                    performanceChartCanvas.style.display = 'none';
+                });
+                employeeList.appendChild(employeeItem);
+            }
+
+            // Update the employee's rating data
+            employeeData[employeeName][rating - 1] += 1;
+
+            alert('Performance rating submitted!');
+
+            // Reset form
+            document.getElementById('performance-form').reset();
+        });
+
+        // Initialize the chart
+        initChart();
+    </script>
+</body>
+</html>

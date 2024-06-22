@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="employee.html">Employee</a></li>
+            <li><a href="attendance.html">Attendance</a></li>
+            <li><a href="performance.html">Performance</a></li>
+            <li><a href="payroll.html">Payroll </a></li>
+            <li><a href="documents.html">Document</a></li>
+            <li><a href="#" id="logout-button">Logout</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container employee-container">
+        <h2>Employee Management</h2>
+        <p>Manage employee information here.</p>
+
+        <!-- Self-service features -->
+        <div class="self-service">
+            <h3>Self-Service Features</h3>
+
+            <div class="leave-request">
+                <h4>Leave Request</h4>
+                <form id="leave-form">
+                    <label for="leave-type">Leave Type</label>
+                    <select id="leave-type" name="leave-type" required>
+                        <option value="sick">Sick Leave</option>
+                        <option value="casual">Casual Leave</option>
+                        <option value="annual">Annual Leave</option>
+                    </select>
+                    <label for="leave-start">Start Date</label>
+                    <input type="date" id="leave-start" name="leave-start" required>
+                    <label for="leave-end">End Date</label>
+                    <input type="date" id="leave-end" name="leave-end" required>
+                    <button type="submit">Submit Leave Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+
+        // Handle leave request submission
+        document.getElementById('leave-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const leaveType = document.getElementById('leave-type').value;
+            const leaveStart = document.getElementById('leave-start').value;
+            const leaveEnd = document.getElementById('leave-end').value;
+
+            // Prepare leave request object
+            const leaveRequest = {
+                type: leaveType,
+                start: leaveStart,
+                end: leaveEnd
+            };
+
+            // Store leave request in local storage
+            let leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+            leaveRequests.push(leaveRequest);
+            localStorage.setItem('leaveRequests', JSON.stringify(leaveRequests));
+
+            alert('Leave request submitted!');
+
+            // Reset form
+            document.getElementById('leave-form').reset();
+        });
+    </script>
+</body>
+</html>

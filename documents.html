@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="employee.html">Employee</a></li>
+            <li><a href="attendance.html">Attendance</a></li>
+            <li><a href="performance.html">Performance</a></li>
+            <li><a href="payroll.html">Payroll</a></li>
+            <li><a href="documents.html">Document</a></li>
+            <li><a href="#" id="logout-button">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h2>Document Management</h2>
+        <form id="document-form">
+            <label for="employee-name">Employee Name:</label>
+            <input type="text" id="employee-name" name="employee-name" required>
+
+            <label for="marks-memo">Marks Memo:</label>
+            <input type="file" id="marks-memo" name="marks-memo">
+
+            <label for="resume">Resume:</label>
+            <input type="file" id="resume" name="resume">
+
+            <label for="identity-proof">Identity Proof:</label>
+            <input type="file" id="identity-proof" name="identity-proof">
+
+            <button type="submit">Upload Documents</button>
+        </form>
+
+        <div id="employee-documents">
+            <h3>Employee Documents</h3>
+            <ul id="employee-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+
+        const employeeDocuments = {};
+        const employeeList = document.getElementById('employee-list');
+
+        document.getElementById('document-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const employeeName = document.getElementById('employee-name').value;
+            const marksMemo = document.getElementById('marks-memo').files[0];
+            const resume = document.getElementById('resume').files[0];
+            const identityProof = document.getElementById('identity-proof').files[0];
+
+            if (!employeeDocuments[employeeName]) {
+                employeeDocuments[employeeName] = {
+                    marksMemo: null,
+                    resume: null,
+                    identityProof: null
+                };
+            }
+
+            if (marksMemo) employeeDocuments[employeeName].marksMemo = marksMemo.name;
+            if (resume) employeeDocuments[employeeName].resume = resume.name;
+            if (identityProof) employeeDocuments[employeeName].identityProof = identityProof.name;
+
+            updateEmployeeList();
+
+            alert('Documents uploaded!');
+
+            document.getElementById('document-form').reset();
+        });
+
+        function updateEmployeeList() {
+            employeeList.innerHTML = '';
+
+            for (const employeeName in employeeDocuments) {
+                const employeeItem = document.createElement('li');
+                employeeItem.textContent = employeeName;
+
+                employeeItem.addEventListener('click', function() {
+                    showDocumentDetails(employeeName);
+                });
+
+                employeeList.appendChild(employeeItem);
+            }
+        }
+
+        function showDocumentDetails(employeeName) {
+            const documents = employeeDocuments[employeeName];
+
+            const documentDetailsDiv = document.createElement('div');
+            documentDetailsDiv.id = 'document-details';
+            documentDetailsDiv.innerHTML = `
+                <table>
+                    <tr>
+                        <th>Document Type</th>
+                        <th>File Name</th>
+                    </tr>
+                    <tr>
+                        <td>Marks Memo</td>
+                        <td>${documents.marksMemo || 'Not uploaded'}</td>
+                    </tr>
+                    <tr>
+                        <td>Resume</td>
+                        <td>${documents.resume || 'Not uploaded'}</td>
+                    </tr>
+                    <tr>
+                        <td>Identity Proof</td>
+                        <td>${documents.identityProof || 'Not uploaded'}</td>
+                    </tr>
+                </table>
+            `;
+
+            const existingDetails = document.getElementById('document-details');
+            if (existingDetails) {
+                existingDetails.remove();
+            }
+
+            employeeList.parentElement.appendChild(documentDetailsDiv);
+        }
+    </script>
+</body>
+</html>

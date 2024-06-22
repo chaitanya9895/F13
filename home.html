@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HRMS Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-text">F13</div>
+    <div class="container">
+        <div class="hexagon-container">
+            <a href="employee.html" class="hexagon-link">Employee </a>
+            <a href="attendance.html" class="hexagon-link">Attendance </a>
+            <a href="performance.html" class="hexagon-link">Performance </a>
+            <a href="payroll.html" class="hexagon-link">Payroll </a>
+            <a href="documents.html" class="hexagon-link">Document </a>
+            <a href="index.html" class="hexagon-link">Logout</a>
+        </div>
+    </div>
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

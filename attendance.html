@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="employee.html">Employee </a></li>
+            <li><a href="attendance.html">Attendance </a></li>
+            <li><a href="performance.html">Performance</a></li>
+            <li><a href="payroll.html">Payroll </a></li>
+            <li><a href="documents.html">Document </a></li>
+            <li><a href="#" id="logout-button">Logout</a></li>
+        </ul>
+    </nav>
+    <div class="container attendance-container">
+        <h2>Attendance Tracking</h2>
+
+        <!-- Leave Request Table -->
+        <div class="leave-requests">
+            <h3>Leave Requests</h3>
+            <table id="leave-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('logout-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+
+        // Retrieve leave requests from local storage and display in table
+        document.addEventListener('DOMContentLoaded', function() {
+            const leaveRequests = JSON.parse(localStorage.getItem('leaveRequests')) || [];
+
+            const tableBody = document.querySelector('#leave-table tbody');
+            
+            leaveRequests.forEach(request => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.type}</td>
+                    <td>${request.start}</td>
+                    <td>${request.end}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        });
+    </script>
+</body>
+</html>
